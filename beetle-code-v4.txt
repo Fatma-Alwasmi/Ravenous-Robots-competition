@@ -1,0 +1,102 @@
+#include <Servo.h>
+#include <NewPing.h>
+
+/*
+ * pins
+ * motorOne pins:
+ * IN 1 = 9, IN 2 = 8, ENA = 10
+ * motorTwo pins:
+ * IN 3 = 7, IN 4 = 6, ENB = 5
+ * sonar pins:
+ * sonarTrig = 3, sonarEcho = 4
+ * other pins:
+ * servoPin = 1 (if we need it)
+ */
+
+//motor constants
+//IN 1, IN 2, ENA
+const int IN_1 = 9;
+const int IN_2 = 8;
+const int ENA = 10;
+
+//IN 3, IN 4, ENB
+const int IN_3 = 7;
+const int IN_4 = 6;
+const int ENB = 5;
+
+//servo constant
+//int servoPin = 1
+//Servo Servo1
+
+//ultrasonic constants WIP
+//sonar pins = int constants
+const int sonarTrig = 3; //Initialize ultrasonic pins
+const int sonarEcho = 4;
+NewPing sonarSensor(sonarTrig, sonarEcho, 100); //Gets values from sensor
+//200 = max value in cm
+int distance = 0; //initialize variable to hold detected distance
+
+//wheel methods WIP
+void enableMotor(int EN){
+  digitalWrite(EN, HIGH);
+}
+
+void wheelForewardMovement(int IN1, int IN2, int EN){
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2,LOW);
+}
+
+void wheelBackwardMovement(int IN1, int IN2, int EN){
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+}
+
+void wheelStop(int IN1, int IN2, int EN){
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+}
+
+//ultrasonic methods
+void pings(){
+  distance = sonarSensor.ping_cm();
+  delay(30);
+}
+
+//setup and loop WIP
+void setup() {
+  //setup code, enough said
+  enableMotor(ENA);
+  enableMotor(ENB);
+
+  //Servo1.attach(servoPin) 
+  //we need to attach the servo to the used pin number
+
+  Serial.begin(9600);
+
+}
+
+void loop() {
+  distance = sonarSensor.ping_cm();
+  Serial.println(String(distance));
+  if (distance <= 10 and distance != 0){
+    Serial.println("and fire");
+    //stop all wheels
+    digitalWrite(IN_1, LOW);
+    digitalWrite(IN_2, LOW);
+    digitalWrite(IN_3, LOW);
+    digitalWrite(IN_4, LOW);
+    //turn robot to the right
+    digitalWrite(IN_1, LOW);
+    digitalWrite(IN_2, HIGH);
+    digitalWrite(IN_3, HIGH);
+    digitalWrite(IN_4, LOW);
+    delay(1000);
+  }
+    
+  digitalWrite(IN_1, HIGH);
+  digitalWrite(IN_2,LOW);
+  digitalWrite(IN_3, HIGH);
+  digitalWrite(IN_4,LOW);
+  delay(3000);
+
+}
